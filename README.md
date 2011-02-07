@@ -19,3 +19,17 @@ Example of usage:
     $ comparesql.php moodle20a.sql > moodle20a.txt
     $ comparesql.php moodle20b.sql > moodle20b.txt
     $ diff moodle20a.txt moodle20b.txt
+
+
+Check multiple string definitions
+---------------------------------
+
+Moodle and Mahara defines strings as associative array. I use this script to
+detect if there is a single string defined multiple times in a file.
+
+Example of usage:
+
+    $ cd ~/public_html/moodle20
+    $ for stringfile in $( find -type f -name '*.php' | grep '/lang/en/' | sort ); do
+    > php checkmultistring.php $stringfile
+    > done
