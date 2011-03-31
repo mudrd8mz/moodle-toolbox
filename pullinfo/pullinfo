@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# when execute within Moodle Git repository, the script displays all the information
+# required to fill a PULL request for the current branch
+
+#
+# the current branch
+#
+BRANCH=$(git branch 2> /dev/null | grep -e ^*\  | tr -d \*\ )
+
+#
+# commitids of the branches tips
+#
+HASH_MASTER=$(git rev-parse --verify origin/master)
+HASH_20_STABLE=$(git rev-parse --verify origin/MOODLE_20_STABLE)
+HASH_19_STABLE=$(git rev-parse --verify origin/MOODLE_19_STABLE)
+
+#
+# check if the current branch is directly reachable from the master
+#
+TMP=$(git rev-list --boundary origin/master..$BRANCH | tail -n1 | tr -d -)
+if [ "$HASH_MASTER" == "$TMP" ]; then
+    BASE="master"
+fi
+
+#
+# check if the current branch is directly reachable from the MOODLE_20_STABLE
+#
+TMP=$(git rev-list --boundary origin/MOODLE_20_STABLE..$BRANCH | tail -n1 | tr -d -)
+if [ "$HASH_20_STABLE" == "$TMP" ]; then
+    BASE="MOODLE_20_STABLE"
+fi
+
+#
+# check if the current branch is directly reachable from the MOODLE_19_STABLE
+#
+TMP=$(git rev-list --boundary origin/MOODLE_19_STABLE..$BRANCH | tail -n1 | tr -d -)
+if [ "$HASH_19_STABLE" == "$TMP" ]; then
+    BASE="MOODLE_19_STABLE"
+fi
+
+#
+# did we find the parent of the current branch?
+#
+if [ -z "$BASE" ]; then
+    echo "Unable to determine the forking point of the current branch"
+    exit 100
+fi
+
+#
+# display the infor for the PULL request
+#
+echo "Pull Branch:          $BRANCH"
+echo "Pull Diff URL:        https://github.com/mudrd8mz/moodle/compare/$BASE...$BRANCH"
+echo "Pull From Repository: git://github.com/mudrd8mz/moodle.git"
