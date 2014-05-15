@@ -41,8 +41,8 @@ Options:
 EOF;
 
 require_once(__DIR__.'/config.php');
-require_once($CFG->libdir . '/clilib.php');
-require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
+require_once($CFG->libdir.'/clilib.php');
+require_once($CFG->dirroot.'/backup/util/includes/restore_includes.php');
 
 list($options, $unrecognized) = cli_get_params(
     array(
@@ -102,16 +102,16 @@ foreach ($sourcefiles as $sourcefile) {
     }
 
     if ($options['verbose']) {
-        cli_problem('Debug: extracted to ' . $path);
+        cli_problem('Debug: extracted to '.$path);
     }
 
     // Start delegated transaction.
     $transaction = $DB->start_delegated_transaction();
 
     // Create new course.
-    $courseid = restore_dbops::create_new_course('clirestored', 'clirestored', $options['categoryid']);
+    $courseid = restore_dbops::create_new_course(fix_utf8($sourcefile->getFilename()), 'clirestored-'.$backupid, $options['categoryid']);
     if ($options['verbose']) {
-        cli_problem('Debug: created new course id ' . $courseid);
+        cli_problem('Debug: created new course id '.$courseid);
     }
 
     // Restore backup into course.
@@ -121,10 +121,26 @@ foreach ($sourcefiles as $sourcefile) {
         $controller->execute_plan();
 
     } else {
-        cli_problem('Precheck fails for ' . $sourcefile->getFilename() . ' ... skipping');
-        continue;
+        cli_problem('Precheck fails for '.$sourcefile->getFilename().' ... skipping');
+        $results = $controller->get_precheck_results();
+        foreach ($results as $type => $messages) {
+            foreach ($messages as $index => $message) {
+                cli_problem('precheck '.$type.'['.$index.'] = '.$message);
+            }
+        }
+        try {
+            $transaction->rollback(new Exception('Prechecked failed'));
+        } catch (Exception $e) {
+            unset($transaction);
+            $controller->destroy();
+            unset($controller);
+            continue;
+        }
     }
 
-    // Commit.
+    // Commit and clean up.
     $transaction->allow_commit();
+    unset($transaction);
+    $controller->destroy();
+    unset($controller);
 }
