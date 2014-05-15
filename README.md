@@ -1,9 +1,20 @@
-TOOLBOX
-=======
+David's Moodle toolbox
+======================
 
-This repository contains various utilities and tools that can be used
-during PHP + SQL development.
+This repository contains various utilities and tools that I occasionally
+use during Moodle development and administration.
 
+
+Moodle backups utilities
+------------------------
+
+Command-line tools for processing the Moodle backup files (MBZ).
+
+Bulk restore of multiple course backups:
+
+    $ sudo -u apache php mbz-restorecourses.php \
+        --sourcedir=/path/to/folder/ \
+        --categoryid=1 --userid=2
 
 Compare PostgreSQL dumps
 ------------------------
