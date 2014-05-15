@@ -1,55 +1,36 @@
 #!/bin/bash
 
 # when execute within Moodle Git repository, the script displays all the information
-# required to fill a PULL request for the current branch
+# required to fill a pull request for the current branch
 
 #
-# the current branch
+# the current branch name
 #
-BRANCH=$(git branch 2> /dev/null | grep -e ^*\  | tr -d \*\ )
+BRANCHNAME=$(git branch 2> /dev/null | grep -e ^*\  | tr -d \*\ )
 
 #
-# commitids of the branches tips
+# current branch HEAD
 #
-HASH_MASTER=$(git rev-parse --verify origin/master)
-HASH_20_STABLE=$(git rev-parse --verify origin/MOODLE_20_STABLE)
-HASH_19_STABLE=$(git rev-parse --verify origin/MOODLE_19_STABLE)
+BRANCHHASH=$(git rev-parse $BRANCHNAME)
 
 #
-# check if the current branch is directly reachable from the master
+# tracked (upstream) branch name
 #
-TMP=$(git rev-list --boundary origin/master..$BRANCH | tail -n1 | tr -d -)
-if [ "$HASH_MASTER" == "$TMP" ]; then
-    BASE="master"
-fi
+BASENAME=$(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref -q HEAD))
 
-#
-# check if the current branch is directly reachable from the MOODLE_20_STABLE
-#
-TMP=$(git rev-list --boundary origin/MOODLE_20_STABLE..$BRANCH | tail -n1 | tr -d -)
-if [ "$HASH_20_STABLE" == "$TMP" ]; then
-    BASE="MOODLE_20_STABLE"
-fi
-
-#
-# check if the current branch is directly reachable from the MOODLE_19_STABLE
-#
-TMP=$(git rev-list --boundary origin/MOODLE_19_STABLE..$BRANCH | tail -n1 | tr -d -)
-if [ "$HASH_19_STABLE" == "$TMP" ]; then
-    BASE="MOODLE_19_STABLE"
-fi
-
-#
-# did we find the parent of the current branch?
-#
-if [ -z "$BASE" ]; then
-    echo "Unable to determine the forking point of the current branch"
+if [ -z "$BASENAME" ]; then
+    echo "Unable to determine the tracked upstream branch - try rebase"
     exit 100
 fi
 
 #
-# display the infor for the PULL request
+# tracked (upstream) branch hash
 #
-echo "Pull Branch:          $BRANCH"
-echo "Pull Diff URL:        https://github.com/mudrd8mz/moodle/compare/$BASE...$BRANCH"
+BASEHASH=$(git rev-parse $BASENAME)
+
+#
+# display the info for the pull request
+#
 echo "Pull From Repository: git://github.com/mudrd8mz/moodle.git"
+echo "Pull Branch:          $BRANCHNAME"
+echo "Pull Diff URL:        https://github.com/mudrd8mz/moodle/compare/$BASEHASH...$BRANCHHASH"
