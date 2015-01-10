@@ -22,15 +22,16 @@ UPGRADE="sudo -u apache /usr/bin/php admin/cli/upgrade.php"
 #
 EX_USAGE=64
 EX_ENV=63
+EX_ABORTED=62
 
 if [[ ! -f ${UTILPATH} ]]; then
     echo "The helper utility ${UTILPATH} not found"
-    exit 1
+    exit ${EX_ENV}
 fi
 
 if [[ ! -f version.php ]] || [[ ! -f config.php ]] || [[ ! -f lib/moodlelib.php ]]; then
     echo "${PWD} does not look like the dirroot of a Moodle instance"
-    exit 1
+    exit ${EX_ENV}
 fi
 
 if [[ $# < 1 || $# > 1 || $1 == '--help' || $1 == '-h' ]]; then
@@ -98,7 +99,7 @@ read -p "do you want to unpack the zip into ${TARGET} [y/n]" -n 1 -r
 echo
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit
+    exit ${EX_ABORTED}
 fi
 
 echo
