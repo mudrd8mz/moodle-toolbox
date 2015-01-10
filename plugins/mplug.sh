@@ -15,7 +15,7 @@ EOF
 #
 UTILPATH=/home/mudrd8mz/www/mdk/m29/moodle/admin/tool/installaddon/cli/util.php
 UTIL="/usr/bin/php ${UTILPATH}"
-UPGRADE="/usr/bin/php admin/cli/upgrade.php"
+UPGRADE="sudo -u apache /usr/bin/php admin/cli/upgrade.php"
 
 #
 # Exit statuses
@@ -101,24 +101,32 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit
 fi
 
+echo
 echo -n "copying "
 cp --verbose --no-clobber ${ZIPPATH} ${TARGET}
 
+echo
 echo -n "changing working directory "
 pushd ${TARGET}
+
+echo
+echo -n "unpacking "
 unzip ${ZIP}
 
 if [[ ${DIRNAME} != ${NAME} ]]; then
+    echo
+    echo "fixing the plugin directory name: ‘${DIRNAME}’ -> ‘${NAME}’"
     mv ${DIRNAME} ${NAME}
 fi
 
 rm ${TARGET}/${ZIP}
 
+echo
 echo -n "changing working directory back to "
 popd
 
 echo
-echo "== the plugin has been successfully deployed =="
+echo "== The plugin has been successfully deployed =="
 echo
 
 ${UPGRADE}
