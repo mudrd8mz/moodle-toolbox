@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# when execute within Moodle Git repository, the script displays all the information
-# required to fill a pull request for the current branch
+# Displays the information to fill into JIRA when submitting the current
+# branch for peer-review or integration.
 
 #
 # the current branch name

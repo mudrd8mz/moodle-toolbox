@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Suggest Git commands to clean-up the moodle.git local repository and the public clone
+# by removing branches that are already merged into the current branch.
+
+MERGED=$(git branch -a --merged 2> /dev/null | grep -v -e ^*\ )
+
+for LINE in $MERGED; do
+    if [[ $LINE =~ ^(.*)(MDL-[0-9]+.*$) ]]; then
+        REMOTE=${BASH_REMATCH[1]}
+        BRANCH=${BASH_REMATCH[2]}
+        if [[ $REMOTE =~ remotes/(.+)/ ]]; then
+            REPO=${BASH_REMATCH[1]}
+            echo git push $REPO :$BRANCH
+        else
+            echo git branch -d $BRANCH
+        fi
+    fi
+done
