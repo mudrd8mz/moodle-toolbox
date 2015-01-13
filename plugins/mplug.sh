@@ -130,4 +130,12 @@ echo
 echo "== The plugin has been successfully deployed =="
 echo
 
+echo
+read -p "execute the CLI upgrade? [y/n]" -n 1 -r
+echo
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit ${EX_ABORTED}
+fi
+
 ${UPGRADE}
