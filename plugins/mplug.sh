@@ -69,6 +69,7 @@ TYPEROOT=$(${UTIL} --typeroot ${TYPE})
 echo "typeroot:     ${TYPEROOT}"
 
 TARGET=${PWD}/${TYPEROOT}
+TARGET=${TARGET%%/}
 
 if [[ ! -w ${TARGET} ]]; then
     echo
@@ -127,7 +128,7 @@ echo -n "changing working directory back to "
 popd
 
 echo
-echo "== The plugin has been successfully deployed =="
+echo "== The plugin has been successfully deployed to ${TARGET}/${NAME} =="
 echo
 
 echo
