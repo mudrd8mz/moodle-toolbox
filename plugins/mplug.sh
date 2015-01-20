@@ -5,7 +5,7 @@ cat << EOF
 Installs the given Moodle plugin into this instance
 
 Usage:
-    $ mplug.sh <zipfile>
+    $ mplug.sh <zipfile> [<component>]
 
 EOF
 }
@@ -34,7 +34,7 @@ if [[ ! -f version.php ]] || [[ ! -f config.php ]] || [[ ! -f lib/moodlelib.php 
     exit ${EX_ENV}
 fi
 
-if [[ $# < 1 || $# > 1 || $1 == '--help' || $1 == '-h' ]]; then
+if [[ $# < 1 || $# > 2 || $1 == '--help' || $1 == '-h' ]]; then
     print_usage
     exit ${EX_USAGE}
 fi
@@ -51,7 +51,11 @@ echo
 echo "== Analysing the zip contents =="
 echo
 
-COMPONENT=$(${UTIL} --component ${ZIPPATH})
+if [[ -z $2 ]]; then
+    COMPONENT=$(${UTIL} --component ${ZIPPATH})
+else
+    COMPONENT="$2"
+fi
 echo "component:    ${COMPONENT}"
 
 DIRNAME=$(${UTIL} --dirname ${ZIPPATH})
