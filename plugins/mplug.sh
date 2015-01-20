@@ -125,6 +125,9 @@ if [[ ${DIRNAME} != ${NAME} ]]; then
     mv ${DIRNAME} ${NAME}
 fi
 
+chgrp -R apache ${NAME}
+chmod -R g+w ${NAME}
+
 rm ${TARGET}/${ZIP}
 
 echo
