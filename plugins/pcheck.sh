@@ -196,7 +196,7 @@ CITOKEN="we01allow02tobuild04this05from06remote07scripts08didnt09you10know"
 
 # Ask Jenkins to schedule a new job build.
 echo -n "Scheduling a new job build ... "
-curlresult=$(curl --silent --request POST --dump-header - --data-urlencode token=${CITOKEN} --data-urlencode remote=${CIREMOTE} --data-urlencode branch=${CIBRANCH} --data-urlencode integrateto=${CIINTEGRATETO} --data-urlencode issue=${CIISSUE} --data-urlencode filter=true ${CIHOST}/job/${CIJOB}/buildWithParameters)
+curlresult=$(curl --silent --request POST --dump-header - --data-urlencode token=${CITOKEN} --data-urlencode remote=${CIREMOTE} --data-urlencode branch=${CIBRANCH} --data-urlencode integrateto=${CIINTEGRATETO} --data-urlencode issue=${CIISSUE} --data-urlencode rebasewarn=999 --data-urlencode rebaseerror=999 --data-urlencode filter=true ${CIHOST}/job/${CIJOB}/buildWithParameters)
 
 # The successful queueing will result in 201 status code
 # with Location HTTP header pointing the URL of the item in the queue.
