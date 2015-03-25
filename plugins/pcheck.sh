@@ -211,9 +211,6 @@ fi
 # Get the URL of the queue item.
 location=$(echo "$curlresult" | grep '^Location: ' | cut -c 11- | tr -d '\n\r')
 
-# Workaround for https://issues.jenkins-ci.org/browse/JENKINS-27256
-location=${location//\/queue\//\/queuefix\/}
-
 echo "OK [${location}api/xml]"
 
 # Poll the queue item to track the status of the queued task.
