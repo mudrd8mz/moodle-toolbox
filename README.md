@@ -15,6 +15,13 @@ converts it into a text file suitable for diffing.  Tables and fields in a table
     $ comparesql.php moodle20b.sql > moodle20b.txt
     $ diff moodle20a.txt moodle20b.txt
 
+Mass deletion of all courses in the given category: This is generally quite slow and is hard to monitor when executed via
+the web interface.
+
+    $ cd /var/www/vhosts/moodle
+    $ cp /path/to/delete-courses.php admin/cli/
+    $ time sudo -u apache /usr/bin/php admin/cli/delete-courses.php --category=7
+
 git: moodle.git helpers
 -----------------------
 
