@@ -29,8 +29,12 @@
 
 $help = "Mass deletion of courses in a given category.
 
-Example:
-    \$ sudo -u www-data /usr/bin/php admin/cli/delete-courses.php --category=CATEGORYID
+Usage:
+    delete-courses.php --category=<id> [--skip-recycle-bin]
+
+Options:
+    --category=<id>     ID of the course category.
+    --skip-recycle-bin  Do not keep deleted courses in the recycle bin.
 ";
 
 define('CLI_SCRIPT', true);
@@ -41,10 +45,11 @@ require_once($CFG->libdir.'/clilib.php');
 list($options, $unrecognized) = cli_get_params(
     array(
         'category' => null,
+        'skip-recycle-bin' => false,
         'help' => false
     ),
     array(
-        'h' => 'help'
+        'h' => 'help',
     )
 );
 
@@ -89,6 +94,11 @@ if ($options['category']) {
 
     $done = 0;
     foreach ($courses as $course) {
+        if ($options['skip-recycle-bin']) {
+            // This is a hack, we pretend to be executed by the restore process
+            // so that the recycle bin hook is skipped.
+            $course->deletesource = 'restore';
+        }
         if (!delete_course($course, false)) {
             throw new moodle_exception('cannotdeletecategorycourse', '', '', $course->shortname);
         }
@@ -101,3 +111,4 @@ if ($options['category']) {
     cli_writeln($help);
 }
 
+cache_helper::purge_by_event('changesincoursecat');
