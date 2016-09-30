@@ -18,7 +18,7 @@ EOF
 # Your environment configuration
 #
 GITSNAPSHOTS=/home/mudrd8mz/git/moodle-plugins-snapshots
-UTILPATH=/home/mudrd8mz/www/mdk/m29/moodle/admin/tool/installaddon/cli/util.php
+UTILPATH=/home/mudrd8mz/www/html/moodle-installaddon-cli/admin/tool/installaddon/cli/util.php
 UTIL="/usr/bin/php ${UTILPATH}"
 
 set -e
@@ -147,26 +147,28 @@ echo == git status ==
 echo
 git status
 
-echo
-read -p "commit the snapshot [y/n]" -n 1 -r
-echo
+#echo
+#read -p "commit the snapshot [y/n]" -n 1 -r
+#echo
+#
+#if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+#    exit ${EX_ABORTED}
+#fi
 
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit ${EX_ABORTED}
-fi
+rm -rf ${TARGET}/${NAME}/.git
 
 git add ${TARGET}/${NAME}
 git commit --author="Plugins bot <plugins@moodle.org>" -m "PLUGIN-${PLUGINVERID} ${COMPONENT}: cibot precheck request"
 
-echo
-read -p "push to the public repo [y/n]" -n 1 -r
-echo
+#echo
+#read -p "push to the public repo [y/n]" -n 1 -r
+#echo
+#
+#if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+#    exit ${EX_ABORTED}
+#fi
 
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit ${EX_ABORTED}
-fi
-
-git push -f origin
+git push -f origin ${BRANCH}
 
 CIREMOTE="https://git.in.moodle.com/mudrd8mz/moodle-plugins-snapshots.git"
 CIBRANCH="${BRANCH}"
@@ -181,15 +183,15 @@ echo "Integrate to: $CIINTEGRATETO"
 echo "Issue:        $CIISSUE"
 echo
 
-read -p "Perform the CI precheck with these parameters? [y/n]" -n 1 -r
-echo
-
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit
-fi
+#read -p "Perform the CI precheck with these parameters? [y/n]" -n 1 -r
+#echo
+#
+#if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+#    exit
+#fi
 
 # CI server performing the precheck.
-CIHOST="http://integration.moodle.org"
+CIHOST="https://integration.moodle.org"
 #CIHOST="http://ci.stronk7.com"
 CIJOB="Precheck%20remote%20branch"
 CITOKEN="we01allow02tobuild04this05from06remote07scripts08didnt09you10know"
