@@ -13,7 +13,7 @@ EOF
 #
 # Your environment configuration
 #
-UTILPATH=/home/mudrd8mz/www/mdk/m29/moodle/admin/tool/installaddon/cli/util.php
+UTILPATH=/home/mudrd8mz/www/html/moodle-installaddon-cli/admin/tool/installaddon/cli/util.php
 UTIL="/usr/bin/php ${UTILPATH}"
 UPGRADE="sudo -u apache /usr/bin/php admin/cli/upgrade.php"
 
